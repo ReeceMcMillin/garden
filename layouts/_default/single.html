@@ -17,6 +17,11 @@
           {{ range (.GetTerms "tags") }}
           <li><a href="{{ .Permalink }}">{{ .LinkTitle | humanize }}</a></li>
           {{ end }}
+          {{if .Params.Wikipedia }}
+          <li class="wikipedia">
+            <a href="{{ .Params.Wikipedia }}" target="_blank" rel="noreferrer">Wikipedia</a>
+          </li>
+          {{ end }}
       </ul>
       {{partial "toc.html" .}}
       {{partial "textprocessing.html" . }}

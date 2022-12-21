@@ -103,3 +103,24 @@ hr {
     transform: translateY(-0.1em);
   }
 }
+
+li.wikipedia {
+  float: right;
+  margin-left: 10px;
+}
+
+li.wikipedia > a {
+  padding-left: 28px;
+  &::before {
+    background-image: url('wikipedia-logo.svg');
+    background-size: 15px 15px;
+    display: inline-block;
+    position: absolute;
+    // padding-left: 20px;
+    margin-top: 4px;
+    margin-left: -20px;
+    width: 15px;
+    height: 15px;
+    content: "";
+  }
+}

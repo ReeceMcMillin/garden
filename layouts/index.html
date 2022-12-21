@@ -8,7 +8,7 @@
     {{partial "header.html" .}}
     <div class="bio">
         <div class="writing-sidebar">
-            <div class="delay t-3">
+            <div>
                 <h2>Recent Writing</h2>
                 {{$writing := where .Site.RegularPages "Section" "posts" }}
                 <ul class="delay stagger">
@@ -19,20 +19,22 @@
                                 <h3><a href="{{ .Permalink }}">{{- .Title -}}</a></h3>
                             </div>
                             <p class="meta">
-                            {{.WordCount}} words on {{partial "date-fmt.html" .}} 
+                                {{.WordCount}} words on {{partial "date-fmt.html" .}} 
                             </p>
                             {{partial "tags.html" .}}
                         </div>
                     </li>
                     {{end}}
                 </ul>
+                {{ if (gt (len $writing) 3) }}
                 <a href="/posts">See {{sub (len $writing) 3}} more →</a>
+                {{ end }}
             </div>
             <div class="delay t-4">
-                <h2>Recent Notes</h2>
-                {{$notes := where .Site.RegularPages "Section" "thoughts"}}
+                <h2>Recent Thoughts</h2>
+                {{$thoughts := where .Site.RegularPages "Section" "thoughts"}}
                 <ul class="delay stagger">
-                    {{range first 2 $notes }}
+                    {{range first 2 $thoughts }}
                     <li>
                         <div class="section">
                             <div class="desc">
@@ -46,7 +48,31 @@
                     </li>
                     {{end}}
                 </ul>
-                <a href="/thoughts">See {{sub (len $notes) 2}} more →</a>
+                {{ if (gt (len $thoughts) 2) }}
+                <a href="/thoughts">See {{sub (len $thoughts) 2}} more →</a>
+                {{ end }}
+            </div>
+            <div>
+                <h2>Recent Technical Notes</h2>
+                {{$technical := where .Site.RegularPages "Section" "technical"}}
+                <ul>
+                    {{range first 2 $technical }}
+                    <li>
+                        <div class="section">
+                            <div class="desc">
+                                <h3><a href="{{ .Permalink }}">{{- .Title -}}</a></h3>
+                            </div>
+                            <p class="meta">
+                                {{.WordCount}} words on {{ .Lastmod.Format "Jan 2, 2006" }}
+                            </p>
+                            {{partial "tags.html" .}}
+                        </div>
+                    </li>
+                    {{end}}
+                </ul>
+                {{ if (gt (len $thoughts) 2) }}
+                <a href="/technical">See {{sub (len $technical) 2}} more →</a>
+                {{ end }}
             </div>
         </div>
         <article>
