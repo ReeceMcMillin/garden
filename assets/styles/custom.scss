@@ -1,5 +1,17 @@
 // Add your own CSS here!
 
+@mixin highlight($color) {
+  display: inline-block;
+  color: var(--dark);
+  padding: 0 5px;
+  margin: 0 2px;
+  background-color: rgba($color, 0.25);
+  border-radius: 5px;
+  text-decoration: 2px underline $color;
+  position: relative;
+  text-shadow: 2px 2px 4px var(--light);
+}
+
 :root {
   --light: #faf8f8;
   --dark: #141021;
@@ -25,10 +37,54 @@
   --lightgray: #292633 !important;
   --outlinegray: #343434 !important;
   --highlighted: #574010;
+
+  >* img[src$=".svg"] {
+    filter: invert(100%);
+  }
+
+  // >* mark.hltr-pink {
+  //   background-color: pink;
+  //   border-radius: 10px 0 10px 0;
+  //   color: var(--light);
+  // }
+}
+
+mark {
+  &.hltr-pink {
+    @include highlight(rgb(255, 170, 184))
+  }
+
+  &.hltr-red {
+    @include highlight(rgb(255, 0, 0))
+  }
+
+  &.hltr-orange {
+    @include highlight(rgb(255, 128, 0))
+  }
+
+  &.hltr-yellow {
+    @include highlight(rgb(255, 217, 0))
+  }
+
+  &.hltr-green {
+    @include highlight(rgb(32, 255, 32))
+  }
+
+  &.hltr-cyan {
+    @include highlight(cyan)
+  }
+
+  &.hltr-blue {
+    @include highlight(rgb(41, 109, 255))
+  }
+
+  &.hltr-purple {
+    @include highlight(rgb(255, 0, 255))
+  }
 }
 
 #index {
-  & > .bio {
+  &>.bio {
     display: flex;
     gap: 1.5em;
     z-index: 1;
@@ -39,10 +95,10 @@
       gap: 4em;
     }
 
-    & > .writing-sidebar {
+    &>.writing-sidebar {
       flex: 0 0 30%;
 
-      & > div {
+      &>div {
         margin-bottom: 2em;
       }
 
@@ -53,7 +109,7 @@
         z-index: 0;
       }
 
-      & > div > a {
+      &>div>a {
         opacity: 0.6;
       }
 
@@ -61,7 +117,7 @@
         font-size: 1.4rem;
         margin: 0.75em 0;
       }
-      
+
       & .section {
         margin-bottom: 1.2em;
       }
@@ -74,7 +130,7 @@
         margin: 0.2em 0;
       }
 
-      & .tags > li > a {
+      & .tags>li>a {
         font-size: 0.9em;
         font-weight: 600;
       }
@@ -83,7 +139,8 @@
 }
 
 hr {
-  overflow: visible; /* For IE */
+  overflow: visible;
+  /* For IE */
   padding: 0;
   margin: 5em auto;
   border: none;
@@ -92,6 +149,7 @@ hr {
   width: 40%;
   z-index: -999;
   border-color: var(--gray);
+
   &:after {
     content: "* * *";
     z-index: -999;
@@ -109,18 +167,34 @@ li.wikipedia {
   margin-left: 10px;
 }
 
-li.wikipedia > a {
+li.wikipedia>a {
   padding-left: 28px;
+
   &::before {
     background-image: url('wikipedia-logo.svg');
     background-size: 15px 15px;
     display: inline-block;
     position: absolute;
-    // padding-left: 20px;
     margin-top: 4px;
     margin-left: -20px;
     width: 15px;
     height: 15px;
     content: "";
+  }
+}
+
+img[src$=".svg"] {
+  display: block;
+  max-width: 60%;
+  margin: auto;
+}
+
+.writing-sidebar {
+  >* h2 {
+    line-height: 1.5;
+  }
+
+  > div {
+    padding-bottom: 20px;
   }
 }
