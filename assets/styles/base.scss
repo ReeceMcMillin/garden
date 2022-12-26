@@ -8,12 +8,6 @@
   --font-mono: "JetBrains Mono"
 }
 
-// :root {
-//   --font-body: "Source Sans Pro";
-//   --font-header: "Inter";
-//   --font-mono: "Fira Code"
-// }
-
 // typography
 html {
   scroll-behavior: smooth;
@@ -244,9 +238,9 @@ article {
     border: var(--outlinegray) 1px solid;
     padding: 0.2em 0.5em;
     &::before {
+      color: var(--gray);
       content: "#";
       margin-right: 0.3em;
-      color: var(--outlinegray);
     }
   }
 }

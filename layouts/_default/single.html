@@ -14,14 +14,31 @@
           {{ partial "github.html" . }}
       </p>
       <ul class="tags">
+          {{ if .Params.Authors }}
+          <li class="dropdown" id="authors">
+            <a>Authors</a>
+            <ul id="author-list">
+              <h1>Authors</h1>
+              {{ range $author := .Params.Authors }}
+              <li>{{ $author }}</li>
+              {{ end }}
+            </ul>
+            </li>
+          {{ end }}
           {{ range (.GetTerms "tags") }}
           <li><a href="{{ .Permalink }}">{{ .LinkTitle | humanize }}</a></li>
           {{ end }}
-          {{if .Params.Wikipedia }}
-          <li class="wikipedia">
-            <a href="{{ .Params.Wikipedia }}" target="_blank" rel="noreferrer">Wikipedia</a>
+          <li class="links">
+            {{if .Params.Link }}
+              <a href="{{ .Params.Link }}" target="_blank" rel="noreferrer">
+                {{/*  <img src="link-icon.svg" />  */}}
+                Link
+              </a>
+            {{ end }}
+            {{if .Params.Wikipedia }}
+              <a href="{{ .Params.Wikipedia }}" target="_blank" rel="noreferrer" class="wikipedia">Wikipedia</a>
+            {{ end }}
           </li>
-          {{ end }}
       </ul>
       {{partial "toc.html" .}}
       {{partial "textprocessing.html" . }}

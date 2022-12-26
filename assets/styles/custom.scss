@@ -1,19 +1,8 @@
 // Add your own CSS here!
 
-@mixin highlight($color) {
-  display: inline-block;
-  color: var(--dark);
-  padding: 0 5px;
-  margin: 0 2px;
-  background-color: rgba($color, 0.25);
-  border-radius: 5px;
-  text-decoration: 2px underline $color;
-  position: relative;
-  text-shadow: 2px 2px 4px var(--light);
-}
-
 :root {
   --light: #faf8f8;
+  --light-alpha: rgba(250, 248, 248, 0.6);
   --dark: #141021;
   --secondary: #284b63;
   --tertiary: #84a59d;
@@ -28,6 +17,7 @@
 
 [saved-theme="dark"] {
   --light: #1e1e21 !important;
+  --light-alpha: rgba(30, 30, 33, 0.6) !important;
   --dark: #fbfffe !important;
   --secondary: #6b879a !important;
   --visited: #4a575e !important;
@@ -41,12 +31,18 @@
   >* img[src$=".svg"] {
     filter: invert(100%);
   }
+}
 
-  // >* mark.hltr-pink {
-  //   background-color: pink;
-  //   border-radius: 10px 0 10px 0;
-  //   color: var(--light);
-  // }
+@mixin highlight($color) {
+  display: inline-block;
+  color: var(--dark);
+  padding: 0 5px;
+  margin: 0 2px;
+  background-color: rgba($color, 0.25);
+  border-radius: 5px;
+  text-decoration: 2px underline $color;
+  position: relative;
+  text-shadow: 2px 2px 4px var(--light);
 }
 
 mark {
@@ -162,39 +158,80 @@ hr {
   }
 }
 
-li.wikipedia {
+li.links {
   float: right;
   margin-left: 10px;
 }
 
-li.wikipedia>a {
-  padding-left: 28px;
-
+li.links > a {
   &::before {
+    content: "\21F1";
+    content: "\2197";
+  }
+
+  &.wikipedia::before {
     background-image: url('wikipedia-logo.svg');
-    background-size: 15px 15px;
-    display: inline-block;
-    position: absolute;
-    margin-top: 4px;
-    margin-left: -20px;
-    width: 15px;
-    height: 15px;
-    content: "";
+    filter: invert(0%);
   }
 }
 
 img[src$=".svg"] {
-  display: block;
   max-width: 60%;
   margin: auto;
 }
 
 .writing-sidebar {
-  >* h2 {
+  > h2 {
     line-height: 1.5;
+    margin: 0 0;
+    padding: 0 auto;
   }
 
   > div {
     padding-bottom: 20px;
+  }
+}
+
+li.dropdown {
+  &.dropdown > ul {
+    > h1 {
+      margin-top: 0;
+      margin-bottom: 10px;
+    }
+
+    display: inline;
+    visibility: hidden;
+    transition: all ease-in-out 0.5s;
+    transition-delay: 0s;
+    position: absolute;
+    opacity: 0%;
+    max-height: 200px;
+    overflow-y: scroll;
+    z-index: 1;
+    background-color: var(--light-alpha);
+    transform: translate(2%, 0%);
+    backdrop-filter: blur(5px);
+    border: 1px solid var(--outlinegray);
+    border-radius: 10px;
+    padding-top: 1rem;
+    padding-right: 2rem;
+    padding-bottom: 1rem;
+    margin-top: 0;
+  }
+
+  > a::before {
+    content: "\23f5";
+  }
+
+  &:hover {
+    > a::before {
+      content: "\23f7";
+    }
+
+    > ul {
+      visibility: visible;
+      transition-delay: 0s;
+      opacity: 100%;
+    }
   }
 }
