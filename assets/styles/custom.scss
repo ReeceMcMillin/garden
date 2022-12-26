@@ -170,8 +170,13 @@ li.links > a {
   }
 
   &.wikipedia::before {
+    content: "";
+    width: 15px;
+    height: 15px;
     background-image: url('wikipedia-logo.svg');
-    filter: invert(0%);
+    background-size: 15px 15px;
+    display: inline-block;
+    margin-top: 4px;
   }
 }
 
