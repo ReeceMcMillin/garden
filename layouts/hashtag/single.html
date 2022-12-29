@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="{{ .Lang }}">
+{{ partial "head.html" . }}
+
+<body>
+{{partial "search.html" .}}
+<div class="singlePage">
+    <!-- Begin actual content -->
+    {{partial "header.html" .}}
+    <article>
+      {{if .Title}}<h1>{{ .Title }}</h1>{{end}}
+      {{partial "toc.html" .}}
+      {{partial "textprocessing.html" . }}
+      <section id="hashtag-backlinks">
+        <h2>Backlinks</h2>
+        <ul>
+            {{ $title := .Title}}
+            {{ range .Site.Pages }}
+                {{ if in .Content $title }}
+                    <li><a href='{{ .RelPermalink }}' class="internal-link" rel="noopener" data-src="{{ .RelPermalink }}">{{ .Title }}</a></li>
+                {{ end }}
+            {{ end }}
+        </ul>
+        </section>
+    </article>
+    {{partial "footer.html" .}}
+</div>
+</body>
+</html>

@@ -1,3 +1,47 @@
+function allOutgoingHashtags(contentIndex) {
+  let knownURLs = Object.keys(contentIndex);
+  let hashtagRE = /#[a-zA-Z]+/g
+
+  let maybeURLs = Array.from(new Set(knownURLs.map(page => {
+    let content = contentIndex[page].content;
+    let matches = content.match(hashtagRE);
+    if (matches) {
+      let maybe = matches.map(tag => tag.replace('#', '/tags/hashtags/'));
+      return maybe;
+    }
+  }).flatMap(_ => _).filter(_ => _)));
+
+  let knownGood = maybeURLs.filter(url => knownURLs.includes(url));
+  let knownGoodTags = knownGood.map(url => url.replace("/tags/hashtags/", "#"))
+  let linksToGood = knownGoodTags.flatMap(tag => {
+    return knownURLs
+      .filter(key => contentIndex[key].content.indexOf(tag) !== -1)
+      .flatMap(url => ({
+        "source": url,
+        "target": tag.replace('#', '/tags/hashtags/'),
+        "text": tag
+      }));
+  });
+
+
+  // TODO: rather than just returning knownGood, turn this into a {source, target, text}
+  //       style object to map actual links to the known-good URLs
+  return linksToGood;
+}
+
+let outgoingHashtags = () => {
+  let maybeHashtags = Array.from(document.getElementsByClassName("hashtag"));
+  let activeHashtags = maybeHashtags
+    .filter(tag => !tag.classList.contains("not-found"))
+    .map(tag => ({
+      "source": window.location.href.replace(window.location.origin, '').replace(/\/$/g, ""),
+      "target": tag.href.replace(window.location.origin, ''),
+      "text": tag.textContent
+    }));
+
+  return activeHashtags;
+}
+
 async function drawGraph(baseUrl, isHome, pathColors, graphConfig) {
 
   let {
@@ -10,8 +54,50 @@ async function drawGraph(baseUrl, isHome, pathColors, graphConfig) {
   repelForce,
   fontSize} = graphConfig;
 
+  let hashtagBacklinkObjects = [];
+  const hashtagBacklinkContainer = document.getElementById("hashtag-backlinks");
+  if (hashtagBacklinkContainer) {
+    let hashtagBacklinks = Array.from(hashtagBacklinkContainer.getElementsByTagName("a"));
+    hashtagBacklinks.forEach(link => {
+      let source = link.href.replace(window.location.origin, '').replace(/\/$/g, "")
+      let target = window.location.pathname.replace(/\/$/g, "").replace(baseUrl, "")
+      let text = document.title;
+
+      let object = {
+        "source": source,
+        "target": target,
+        "text": text
+      }
+      
+      hashtagBacklinkObjects.push(object);
+    })
+  }
+
+  let activeHashtags = outgoingHashtags();
+  // activeHashtags.forEach(object => console.log(JSON.stringify(object, null, 2)))
+
   const container = document.getElementById("graph-container")
   const { index, links, content } = await fetchData
+
+  let aoh = allOutgoingHashtags(content);
+    
+  activeHashtags.concat(aoh, hashtagBacklinkObjects).forEach(object => {
+    links.push(object);
+    if (index.links[object.source]) {
+      index.links[object.source].push(object);
+    } else {
+      index.links[object.source] = [object];
+    }
+    if (index.backlinks[object.target]) {
+      index.backlinks[object.target].push(object);
+    } else {
+      index.backlinks[object.target] = [object];
+    }
+  });
+
+  // console.log(`index: ${JSON.stringify(index, null, 2)}`)
+  // console.log(`content: ${JSON.stringify(content, null, 2)}`)
+
 
   // Use .pathname to remove hashes / searchParams / text fragments
   const cleanUrl = window.location.origin + window.location.pathname
@@ -28,10 +114,13 @@ async function drawGraph(baseUrl, isHome, pathColors, graphConfig) {
 
   const neighbours = new Set()
   const wl = [curPage || "/", "__SENTINEL"]
+  
+  // console.log(`wl: ${wl.length}`)
   if (depth >= 0) {
     while (depth >= 0 && wl.length > 0) {
       // compute neighbours
       const cur = wl.shift()
+      // console.log(cur)
       if (cur === "__SENTINEL") {
         depth--
         wl.push("__SENTINEL")
@@ -39,19 +128,33 @@ async function drawGraph(baseUrl, isHome, pathColors, graphConfig) {
         neighbours.add(cur)
         const outgoing = index.links[cur] || []
         const incoming = index.backlinks[cur] || []
+        // console.log(`cur: "${cur}"`)
+        // console.log(Object.keys(index.backlinks))
+        // console.log(`index: ${JSON.stringify(index, null, 2)}`)
+        // console.log(`outgoing: ${JSON.stringify(outgoing, null, 2)}`)
+        // console.log(`incoming: ${JSON.stringify(incoming, null, 2)}`)
         wl.push(...outgoing.map((l) => l.target), ...incoming.map((l) => l.source))
+        // console.log(wl)
+        // console.log(neighbours)
       }
     }
   } else {
     parseIdsFromLinks(copyLinks).forEach((id) => neighbours.add(id))
   }
-
+  
+  // console.log(neighbours)
   const data = {
     nodes: [...neighbours].map((id) => ({ id })),
     links: copyLinks.filter((l) => neighbours.has(l.source) && neighbours.has(l.target)),
   }
 
   const color = (d) => {
+
+    // console.log(d)
+    if (d.id.startsWith("/tags/hashtags/")) {
+      return "var(--g-node-hashtag"
+    }
+    
     if (d.id === curPage || (d.id === "/" && curPage === "")) {
       return "var(--g-node-active)"
     }

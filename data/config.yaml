@@ -26,3 +26,7 @@ links:
     link: https://twitter.com/AerocityMusic
   - link_name: Github
     link: https://github.com/ReeceMcMillin
+markup:
+  goldmark:
+    parser:
+      autoHeadingID: true

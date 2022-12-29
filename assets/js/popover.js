@@ -31,9 +31,10 @@ function initPopover(baseURL, useContextualBacklinks) {
               let headingIndex = cleanedContent.toLowerCase().indexOf("<b>" + headingName + "</b>")
               cleanedContent = cleanedContent.substring(headingIndex, cleanedContent.length)
             }
+            // console.log(`content: ${cleanedContent}`)
             const popoverElement = `<div class="popover">
     <h3>${linkDest.title}</h3>
-    <p>${cleanedContent.split(" ", 20).join(" ")}...</p>
+    <p>${cleanedContent.split(" ", 20).join(" ")}${cleanedContent.length > 50 ? '...' : ''}</p>
     <p class="meta">${new Date(linkDest.lastmodified).toLocaleDateString()}</p>
 </div>`
             el = htmlToElement(popoverElement)

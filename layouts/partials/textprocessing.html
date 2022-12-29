@@ -1,6 +1,42 @@
 {{ $content := .Content }}
 {{ $raw := .RawContent }}
 {{ $page := .Page }}
+{{ $knownTags := slice "404" }}
+
+{{ range where .Site.Pages "Params.type" "hashtag" }}
+  {{ $knownTags = $knownTags | append (.Title | strings.TrimPrefix "#")| uniq }}
+{{ end }}
+
+{{/* Replace inline tags with a link to a not-implemented page */}}
+{{$hashtagRE := `\B(#[a-zA-Z]+)\b`}}
+
+{{$hashtags := findRE $hashtagRE $content}}
+{{range $hashtags}}
+  {{ $tag := . | strings.TrimPrefix "#" }}
+  {{/*  this workaround kind of sucks, but it catches enough to be alright  */}}
+  {{ if strings.HasPrefix $tag "fn" }}
+    {{ continue }}
+  {{ end }}
+  {{ $href := printf "/tags/hashtags/%s" $tag }}
+  {{ $href404 := "/tags/hashtags/404" }}
+  {{ $maybeFixed := printf "<a href=\"%s\" rel=\"noopener\" class=\"internal-link hashtag\" data-src=\"%s\">#%s</a>" $href $href $tag}}
+  {{ $maybe404 := printf "<a rel=\"noopener\" class=\"internal-link hashtag not-found\" data-src=\"%s\">#%s</a>" $href404 $tag}}
+  {{ $fixed := cond (in $knownTags $tag) $maybeFixed $maybe404 }}
+  {{$content = replace $content . $fixed}}
+{{end}}
+
+{{$obsidianComments := findRE "%%\\s(.*)\\s%%" $content}}
+{{range $obsidianComments}}
+  {{$fixed := replaceRE "%%\\s(.*)\\s%%" "<p class='comment'>${1}</p>" .}}
+  {{$content = replace $content . $fixed}}
+{{end}}
+
+{{/*  {{$dateRE := "(?P<date>\\d{4}-\\d{2}-\\d{2})T(?P<time>\\d{2}:\\d{2}:\\d{2})\\.\\d+(?P<tz>-\\d{2}:\\d{2})"}}
+{{$dates := findRE $dateRE .}}
+{{range $dates}}
+  {{$fixed := replaceRE $dateRE "${date}" .}}
+  {{$content = replace $content . $fixed}}
+{{end}}  */}}
 
 {{/* Escape slashes for Latex to fix line breaks */}}
 {{$latex := findRE "(?:\\${2}([^\\$]+)\\${2})|(?:\\$([^\\$]*)\\$)" $content}}

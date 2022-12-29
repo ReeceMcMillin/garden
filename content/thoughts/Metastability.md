@@ -9,5 +9,9 @@ tags:
 - seed
 ---
 
-Paper notes at [[technical/papers/Metastable Failures in Distributed Systems]]
+Paper notes at [[technical/papers/bronsonMetastableFailuresDistributed2021|Metastable failures in distributed systems]]
+
+#hashtag #fake #test
+
+now i'm linking to [[technical/Precision Time Protocol (PTP)]]
 
