@@ -184,8 +184,9 @@ li.links > a {
 }
 
 img[src$=".svg"] {
-  max-width: 60%;
-  margin: auto;
+  display: block;
+  max-height: 400px;
+  margin: 0 auto;
 }
 
 .writing-sidebar {
