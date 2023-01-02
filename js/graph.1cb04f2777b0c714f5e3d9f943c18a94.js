@@ -151,7 +151,7 @@ async function drawGraph(baseUrl, isHome, pathColors, graphConfig) {
   const color = (d) => {
 
     // console.log(d)
-    if (d.id.startsWith("/garden/tags/hashtags/")) {
+    if (d.id.startsWith(`${baseUrl}tags/hashtags/`)) {
       return "var(--g-node-hashtag"
     }
     
