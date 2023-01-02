@@ -6,19 +6,19 @@ function allOutgoingHashtags(contentIndex) {
     let content = contentIndex[page].content;
     let matches = content.match(hashtagRE);
     if (matches) {
-      let maybe = matches.map(tag => tag.replace('#', '/tags/hashtags/'));
+      let maybe = matches.map(tag => tag.replace('#', '/garden/tags/hashtags/'));
       return maybe;
     }
   }).flatMap(_ => _).filter(_ => _)));
 
   let knownGood = maybeURLs.filter(url => knownURLs.includes(url));
-  let knownGoodTags = knownGood.map(url => url.replace("/tags/hashtags/", "#"))
+  let knownGoodTags = knownGood.map(url => url.replace("/garden/tags/hashtags/", "#"))
   let linksToGood = knownGoodTags.flatMap(tag => {
     return knownURLs
       .filter(key => contentIndex[key].content.indexOf(tag) !== -1)
       .flatMap(url => ({
         "source": url,
-        "target": tag.replace('#', '/tags/hashtags/'),
+        "target": tag.replace('#', '/garden/tags/hashtags/'),
         "text": tag
       }));
   });
@@ -151,7 +151,7 @@ async function drawGraph(baseUrl, isHome, pathColors, graphConfig) {
   const color = (d) => {
 
     // console.log(d)
-    if (d.id.startsWith("/tags/hashtags/")) {
+    if (d.id.startsWith("/garden/tags/hashtags/")) {
       return "var(--g-node-hashtag"
     }
     
